@@ -1,0 +1,16 @@
+body { 
+    font-family: 'Inter', sans-serif; 
+    background-color: #111827; 
+    color: #d1d5db; 
+}
+.recharts-tooltip-wrapper { 
+    background-color: #1f2937 !important; 
+    border: 1px solid #374151 !important; 
+    border-radius: 0.5rem !important; 
+}
+.recharts-tooltip-label { 
+    color: #d1d5db !important; 
+}
+.recharts-legend-item-text { 
+    color: #d1d5db !important; 
+}
