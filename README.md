@@ -23,7 +23,7 @@ npm test
 npm run dev
 ```
 
-Sign in (Google or anonymous), then upload an IBKR Flex XML or click **Use bundled multi-account sample XML**.
+Sign in (Google or anonymous), then upload an IBKR Flex XML or click **Use bundled multi-account sample XML**. If Firebase keys/auth are not valid in this environment, use **Preview bundled sample (local, no Firebase)** on the sign-in screen — Firebase remains the path for dated reports.
 
 ## Testing notes (multi-portfolio)
 

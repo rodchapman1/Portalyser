@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 
-export function AuthScreen({ onGoogleSignIn, onAnonymousSignIn, isLoading }) {
+export function AuthScreen({ onGoogleSignIn, onAnonymousSignIn, onLocalPreview, isLoading, error }) {
     return (
         <div className="min-h-screen flex items-center justify-center p-6">
             <div className="w-full max-w-md rounded-2xl border border-gray-700 bg-gray-900 p-8 shadow-xl">
@@ -8,6 +8,9 @@ export function AuthScreen({ onGoogleSignIn, onAnonymousSignIn, isLoading }) {
                 <p className="mt-2 text-gray-400">
                     Sign in to load dated IBKR Flex reports and multi-portfolio NAV views.
                 </p>
+                {error && (
+                    <p className="mt-3 rounded-lg border border-red-500/40 bg-red-950/40 px-3 py-2 text-sm text-red-200">{error}</p>
+                )}
                 <div className="mt-6 space-y-3">
                     <button
                         type="button"
@@ -25,6 +28,16 @@ export function AuthScreen({ onGoogleSignIn, onAnonymousSignIn, isLoading }) {
                     >
                         Continue anonymously
                     </button>
+                    {onLocalPreview && (
+                        <button
+                            type="button"
+                            onClick={onLocalPreview}
+                            disabled={isLoading}
+                            className="w-full rounded-lg border border-dashed border-sky-700 px-4 py-2.5 text-sm font-medium text-sky-200 hover:bg-gray-800 disabled:opacity-50"
+                        >
+                            Preview bundled sample (local, no Firebase)
+                        </button>
+                    )}
                 </div>
             </div>
         </div>
@@ -34,7 +47,9 @@ export function AuthScreen({ onGoogleSignIn, onAnonymousSignIn, isLoading }) {
 AuthScreen.propTypes = {
     onGoogleSignIn: PropTypes.func.isRequired,
     onAnonymousSignIn: PropTypes.func.isRequired,
+    onLocalPreview: PropTypes.func,
     isLoading: PropTypes.bool,
+    error: PropTypes.string,
 };
 
 export function FileUploadControl({ onFileSelected, accept = '.xml,text/xml', label = 'Upload IBKR Flex XML' }) {

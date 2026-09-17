@@ -22,6 +22,11 @@ import { DashboardView } from './components/DashboardView.jsx';
 import { OptionsAnalysisView, WhatIfView } from './components/AnalysisViews.jsx';
 
 const HOLDINGS_STORAGE_KEY = 'portalyser.superJseHoldings';
+const LOCAL_PREVIEW_USER = { uid: 'local-preview', isAnonymous: true, email: null };
+
+function isLocalUser(currentUser) {
+    return currentUser?.uid === LOCAL_PREVIEW_USER.uid;
+}
 
 function reportsPath(userId) {
     return `artifacts/${appId}/users/${userId}/reports`;
@@ -55,7 +60,10 @@ function App() {
             return undefined;
         }
         const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
-            setUser(currentUser || null);
+            setUser((previous) => {
+                if (isLocalUser(previous) && !currentUser) return previous;
+                return currentUser || null;
+            });
             setIsLoading(false);
             setIsAuthReady(true);
         });
@@ -85,7 +93,7 @@ function App() {
 
     const persistExternalHoldings = async (holdings) => {
         window.localStorage.setItem(HOLDINGS_STORAGE_KEY, JSON.stringify(holdings));
-        if (user && db) {
+        if (user && db && !isLocalUser(user)) {
             await setDoc(holdingsDoc(user.uid), sanitizeForFirestore(holdings));
         }
     };
@@ -127,7 +135,7 @@ function App() {
     };
 
     useEffect(() => {
-        if (user && isAuthReady && db) {
+        if (user && !isLocalUser(user) && isAuthReady && db) {
             fetchSavedReports(user.uid);
         } else if (isAuthReady && !user) {
             setIsLoading(false);
@@ -159,35 +167,51 @@ function App() {
     };
 
     useEffect(() => {
-        if (user && selectedDate && db) {
+        if (user && !isLocalUser(user) && selectedDate && db) {
             loadReportData(user.uid, selectedDate);
         }
     }, [selectedDate, user]);
 
+    const applyParsedReport = (parsed) => {
+        setPortfolioData(parsed);
+        setSelectedDate(parsed.reportDate);
+        setSelectedPortfolioId(ALL_ID);
+        setSavedReports((current) => (
+            current.includes(parsed.reportDate) ? current : [parsed.reportDate, ...current]
+        ));
+    };
+
     const parseAndSaveIBKRXml = async (xmlText) => {
-        if (!user || !db) {
-            setError('Cannot save data: user is not authenticated or database is not available.');
-            return;
-        }
         setIsLoading(true);
         setError(null);
         try {
             const dataToSave = sanitizeForFirestore(parseIBKRFlexXml(xmlText));
-            const reportRef = doc(db, `${reportsPath(user.uid)}/${dataToSave.reportDate}`);
-            await setDoc(reportRef, dataToSave);
-            setPortfolioData(dataToSave);
-            await fetchSavedReports(user.uid);
-            setSelectedDate(dataToSave.reportDate);
-            setSelectedPortfolioId(ALL_ID);
+            applyParsedReport(dataToSave);
+            if (user && db && !isLocalUser(user)) {
+                const reportRef = doc(db, `${reportsPath(user.uid)}/${dataToSave.reportDate}`);
+                await setDoc(reportRef, dataToSave);
+                await fetchSavedReports(user.uid);
+                setSelectedDate(dataToSave.reportDate);
+            }
         } catch (parseError) {
             console.error('XML Processing or Firestore Save Error:', parseError);
-            try {
-                const parsed = parseIBKRFlexXml(xmlText);
-                setPortfolioData(parsed);
-                setError(`Parsed locally but did not save: ${parseError.message}`);
-            } catch {
-                setError(`Error processing XML or saving to database: ${parseError.message}`);
-            }
+            setError(`Error processing XML or saving to database: ${parseError.message}`);
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
+    const startLocalPreview = async () => {
+        setIsLoading(true);
+        setError(null);
+        try {
+            setUser(LOCAL_PREVIEW_USER);
+            const response = await fetch('/samples/ibkr-flex-multi-account.xml');
+            if (!response.ok) throw new Error('Could not load bundled sample XML.');
+            applyParsedReport(sanitizeForFirestore(parseIBKRFlexXml(await response.text())));
+        } catch (previewError) {
+            setUser(null);
+            setError(`Local preview failed: ${previewError.message}`);
         } finally {
             setIsLoading(false);
         }
@@ -263,7 +287,16 @@ function App() {
         })));
     }, [analysis]);
 
-    const signOutUser = () => signOut(auth);
+    const signOutUser = async () => {
+        if (isLocalUser(user)) {
+            setUser(null);
+            setPortfolioData(null);
+            setSavedReports([]);
+            setSelectedDate('');
+            return;
+        }
+        await signOut(auth);
+    };
 
     if (isLoading && !isAuthReady) {
         return <LoadingSpinner text="Authenticating..." />;
@@ -272,6 +305,7 @@ function App() {
     if (!user) {
         return (
             <AuthScreen
+                error={error}
                 onGoogleSignIn={async () => {
                     setIsLoading(true);
                     try {
@@ -291,6 +325,7 @@ function App() {
                         setIsLoading(false);
                     }
                 }}
+                onLocalPreview={startLocalPreview}
                 isLoading={isLoading}
             />
         );
