@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<FlexQueryResponse queryName="Portalyser sample" type="AF">
+  <FlexStatements count="2">
+    <FlexStatement accountId="U1111111" fromDate="20240901" toDate="20240917" currency="AUD" acctAlias="Trading" period="LastThirtyDays" whenGenerated="20240917;120000">
+      <ConversionRates>
+        <ConversionRate fromCurrency="USD" toCurrency="AUD" rate="1.5"/>
+        <ConversionRate fromCurrency="AUD" toCurrency="AUD" rate="1"/>
+      </ConversionRates>
+      <OpenPositions>
+        <OpenPosition accountId="U1111111" acctAlias="Trading" assetCategory="STK" symbol="AAPL" description="APPLE INC" currency="USD" fxRateToBase="1.5" position="10" markPrice="200" positionValue="2000" levelOfDetail="SUMMARY"/>
+        <OpenPosition accountId="U1111111" assetCategory="STK" symbol="AAPL" description="APPLE INC" currency="USD" fxRateToBase="1.5" position="10" markPrice="200" positionValue="2000" levelOfDetail="LOT"/>
+        <OpenPosition accountId="U1111111" assetCategory="OPT" symbol="AAPL  250117C00200000" description="AAPL 17JAN25 200 C" currency="USD" fxRateToBase="1.5" position="-1" markPrice="5" positionValue="-500" underlyingSymbol="AAPL" expiry="20250117" strike="200" putCall="C" multiplier="100" levelOfDetail="SUMMARY"/>
+      </OpenPositions>
+      <CashReport>
+        <CashReportCurrency accountId="U1111111" currency="USD" endingCash="1000"/>
+        <CashReportCurrency accountId="U1111111" currency="AUD" endingCash="500"/>
+        <CashReportCurrency accountId="U1111111" currency="BASE_SUMMARY" endingCash="2000"/>
+      </CashReport>
+      <EquitySummaryInBase>
+        <EquitySummaryByReportDateInBase accountId="U1111111" reportDate="20240916" currency="AUD" cash="1990" stock="2900" options="-700" dividendAccruals="40" interestAccruals="8" total="4238"/>
+        <EquitySummaryByReportDateInBase accountId="U1111111" reportDate="20240917" currency="AUD" cash="2000" stock="3000" options="-750" dividendAccruals="50" interestAccruals="10" total="4310"/>
+      </EquitySummaryInBase>
+      <OpenDividendAccruals>
+        <OpenDividendAccrual accountId="U1111111" currency="USD" fxRateToBase="1.5" netAmount="33.333333" symbol="AAPL"/>
+      </OpenDividendAccruals>
+      <InterestAccruals>
+        <InterestAccrualsCurrency accountId="U1111111" currency="AUD" endingAccrualBalance="10"/>
+      </InterestAccruals>
+    </FlexStatement>
+    <FlexStatement accountId="U2222222" fromDate="20240901" toDate="20240917" currency="AUD" acctAlias="LongTerm" period="LastThirtyDays" whenGenerated="20240917;120000">
+      <OpenPositions>
+        <OpenPosition accountId="U2222222" assetCategory="STK" symbol="BHP" description="BHP GROUP" currency="AUD" fxRateToBase="1" position="20" markPrice="40" positionValue="800" levelOfDetail="SUMMARY"/>
+      </OpenPositions>
+      <CashReport>
+        <CashReportCurrency accountId="U2222222" currency="AUD" endingCash="200"/>
+      </CashReport>
+      <EquitySummaryInBase>
+        <EquitySummaryByReportDateInBase accountId="U2222222" reportDate="20240917" currency="AUD" cash="200" stock="800" options="0" dividendAccruals="0" interestAccruals="0" total="1000"/>
+      </EquitySummaryInBase>
+    </FlexStatement>
+  </FlexStatements>
+</FlexQueryResponse>
