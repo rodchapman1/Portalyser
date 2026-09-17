@@ -1,0 +1,16 @@
+{
+  "_readme": "Template for SUPER and JSE holdings. Fill from the Hermes Google Sheet (tabs: Portfolio, latest_stocks, db_frontend). Live Sheets API is not wired — paste CSV/JSON in the app or edit this file. Do not put secrets here.",
+  "asOf": null,
+  "baseCurrency": "AUD",
+  "source": "template",
+  "portfolios": {
+    "SUPER": {
+      "cashAUD": 0,
+      "positions": []
+    },
+    "JSE": {
+      "cashAUD": 0,
+      "positions": []
+    }
+  }
+}

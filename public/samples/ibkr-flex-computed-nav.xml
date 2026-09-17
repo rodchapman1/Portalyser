@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<FlexQueryResponse queryName="Portalyser computed fallback" type="AF">
+  <FlexStatements count="1">
+    <FlexStatement accountId="U3333333" fromDate="20240901" toDate="20240917" currency="AUD">
+      <ConversionRates>
+        <ConversionRate fromCurrency="USD" toCurrency="AUD" rate="2"/>
+      </ConversionRates>
+      <OpenPositions>
+        <OpenPosition accountId="U3333333" assetCategory="STK" symbol="MSFT" description="MICROSOFT" currency="USD" fxRateToBase="2" position="5" markPrice="400" positionValue="2000"/>
+        <OpenPosition accountId="U3333333" assetCategory="OPT" symbol="MSFT 250117P00380000" description="MSFT 17JAN25 380 P" currency="USD" fxRateToBase="2" position="2" markPrice="3" positionValue="600" underlyingSymbol="MSFT" expiry="20250117" strike="380" putCall="P" multiplier="100"/>
+      </OpenPositions>
+      <CashReport>
+        <CashReportCurrency accountId="U3333333" currency="USD" endingCash="100"/>
+      </CashReport>
+    </FlexStatement>
+  </FlexStatements>
+</FlexQueryResponse>
